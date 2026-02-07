@@ -1,0 +1,48 @@
+{
+    "name": "C++ Student Sandbox",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "workspaceFolder": "/home/student/projects",
+    "runArgs": [
+        "--cap-drop=ALL",
+        "--cap-add=SYS_PTRACE",
+        "--security-opt=seccomp=unconfined",
+        "--pids-limit=64",
+        "--memory=512m",
+        "--cpus=1",
+        "--network=bridge"
+    ],
+    "containerEnv": {
+        "CC": "clang",
+        "CXX": "clang++"
+    },
+    "remoteUser": "student",
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/home/student/projects,type=bind,consistency=cached",
+        "source=${env:SSH_AUTH_SOCK},target=/ssh-agent,type=bind"
+    ],
+    "remoteEnv": {
+        "SSH_AUTH_SOCK": "/ssh-agent"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools",
+                "ms-vscode.makefile-tools"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "cmake.configureOnOpen": true,
+                "cmake.generator": "Ninja",
+                "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+                "C_Cpp.intelliSenseEngine": "default"
+            }
+        }
+    },
+    "postCreateCommand": "git config --global core.autocrlf false && echo 'Sandbox ready'",
+    "features": {},
+    "shutdownAction": "stopContainer"
+}
